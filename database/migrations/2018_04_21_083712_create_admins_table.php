@@ -15,9 +15,15 @@ class CreateAdminsTable extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('store_id')->unsigned()->nullable();
+            $table->foreign('store_id')
+                ->references('id')
+                ->on('stores')
+                ->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->tinyInteger('super_admin')->default(0);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

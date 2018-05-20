@@ -23,6 +23,16 @@ class Store extends Model
     ];
 
     /**
+     * The store has many admins.
+     *
+     * @return array object
+     */
+    public function admins()
+    {
+        return $this->hasMany(Admin::class);
+    }
+
+    /**
      * The store has many products.
      *
      * @return array object
