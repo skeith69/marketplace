@@ -2,9 +2,11 @@
 
 Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.dev'], function () {
     // Authentication
-    Route::get('/auth/get-admin', 'AuthController@admin');
+    Route::get('auth/get-admin', 'AuthController@getAdmin');
 
     // Admins
+    Route::get('admins/{admin}/assigned-roles', 'AdminsController@getAssignedRoles');
+    Route::post('admins/toggle-role', 'AdminsController@toggleRole')->name('admins.toggle-role');
     Route::resource('admins', 'AdminsController', [
         'only' => [
             'index', 'store', 'show', 'update', 'destroy'
@@ -19,8 +21,26 @@ Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.dev'], fun
         ]
     ]);
 
+    // Permissions
+    Route::get('permissions/retrieve-all-permissions', 'PermissionsController@all')->name('permissions.get-all-permissions');
+    Route::resource('permissions', 'PermissionsController', [
+        'only' => [
+            'index', 'store', 'show', 'update', 'destroy'
+        ]
+    ]);
+
     // Product
     Route::resource('products', 'ProductsController', [
+        'only' => [
+            'index', 'store', 'show', 'update', 'destroy'
+        ]
+    ]);
+
+    // Roles
+    Route::get('roles/retrieve-all-roles', 'RolesController@all')->name('roles.get-all-roles');
+    Route::get('roles/{role}/assigned-permissions', 'RolesController@getAssignedPermissions');
+    Route::post('roles/toggle-permission', 'RolesController@togglePermission')->name('roles.toggle-permission');
+    Route::resource('roles', 'RolesController', [
         'only' => [
             'index', 'store', 'show', 'update', 'destroy'
         ]

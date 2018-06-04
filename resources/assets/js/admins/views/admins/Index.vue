@@ -32,7 +32,8 @@
                             <td>{{ name }}</td>
                             <td>{{ email }}</td>
                             <td>
-                                <router-link class="text-info" :to="{ name: 'admins.view', params: { id: id }}">View</router-link>
+                                <router-link class="text-info" :to="{ name: 'admins.view', params: { id: id } }">View</router-link> | 
+                                <router-link class="text-success" :to="{ name: 'admins.assign-roles', params: { id: id } }">Assign Roles</router-link>
                             </td>
                         </tr>
                     </tbody>

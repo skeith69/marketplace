@@ -26,9 +26,39 @@ class AdminRepository extends Repository
     public function store($request)
     {
         return $this->admin->create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => bcrypt($request->password)
         ]);
+    }
+
+    /**
+     * Toggle to add or remove role on certain admin.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return boolean
+     */
+    public function toggleRole($request)
+    {
+        if ($this->admin->findOrFail($request->admin_id)->roles()->toggle($request->role_id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieve assigned roles for specific admin using id.
+     *
+     * @param  int $id Permission id
+     * @return array
+     */
+    public function getAssignedRoles($id)
+    {
+        return $this->admin->where('id', $id)->with([
+            'roles' => function ($query) {
+                $query->select('id');
+            }
+        ])->first()->roles;
     }
 }

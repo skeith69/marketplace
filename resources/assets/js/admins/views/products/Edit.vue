@@ -7,6 +7,10 @@
             <div class="card-body">
                 <div v-if="ifReady">
                     <form ref="editProductForm" role="form" method="POST" accept-charset="utf-8" v-on:submit.prevent="editProduct">
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control-file" @change="onFileSelected" id="image" required>
+                        </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="store">Store</label>
@@ -53,99 +57,110 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            ifReady: false,
-            stores: [],
-            categories: [],
-            store: '',
-            category: '',
-            store_id: '',
-            category_id: '',
-            name: '',
-            description: '',
-            price: ''
-        };
-    },
-
-    mounted() {
-        let storesPromise = new Promise((resolve, reject) => {
-            axios.get('/api/stores/retrieve-all-stores', {}).then(res => {
-                this.stores = res.data.stores;
-                resolve();
-            }).catch(err => {
-                console.log(err);
-            });
-        });
-
-        let categoriesPromise = new Promise((resolve, reject) => {
-            axios.get('/api/categories/retrieve-all-categories', {}).then(res => {
-                this.categories = res.data.categories;
-                resolve();
-            }).catch(err => {
-                console.log(err);
-            });
-        });
-
-        let productPromise = new Promise((resolve, reject) => {
-            axios.get('/api/products/' + this.$route.params.id).then(res => {
-                this.id          = res.data.product.id;
-                this.store       = res.data.product.store;
-                this.category    = res.data.product.category;
-                this.name        = res.data.product.name;
-                this.description = res.data.product.description;
-                this.price       = res.data.product.price;
-
-                resolve();
-            }).catch(err => {
-                console.log(err);
-            });
-        });
-
-        Promise.all([storesPromise, categoriesPromise, productPromise]).then(() => {
-            this.ifReady = true;
-        });
-        
-    },
-
-    methods: {
-        selectStore() {
-            this.store_id = this.store.id;
-        },
-        selectCategory() {
-            this.category_id = this.category.id;
-        },
-        viewProduct() {
-            this.$router.push({
-                name: 'products.view',
-                params: { id: this.$route.params.id }
-            });
-        },
-        updateProduct() {
-            this.ifReady = false;
-
-            let data = {
-                store_id: this.store_id,
-                category_id: this.category_id,
-                name: this.name,
-                description: this.description,
-                price: this.price
+    export default {
+        data() {
+            return {
+                ifReady: false,
+                image: null,
+                stores: [],
+                categories: [],
+                store: '',
+                category: '',
+                store_id: '',
+                category_id: '',
+                name: '',
+                description: '',
+                price: ''
             };
+        },
 
-            axios.patch('/api/products/' + this.$route.params.id, data).then(res => {
+        mounted() {
+            let storesPromise = new Promise((resolve, reject) => {
+                axios.get('/api/stores/retrieve-all-stores', {}).then(res => {
+                    this.stores = res.data.stores;
+                    resolve();
+                }).catch(err => {
+                    console.log(err);
+                });
+            });
+
+            let categoriesPromise = new Promise((resolve, reject) => {
+                axios.get('/api/categories/retrieve-all-categories', {}).then(res => {
+                    this.categories = res.data.categories;
+                    resolve();
+                }).catch(err => {
+                    console.log(err);
+                });
+            });
+
+            let productPromise = new Promise((resolve, reject) => {
+                axios.get('/api/products/' + this.$route.params.id).then(res => {
+                    this.id          = res.data.product.id;
+                    this.store       = res.data.product.store;
+                    this.category    = res.data.product.category;
+                    this.name        = res.data.product.name;
+                    this.description = res.data.product.description;
+                    this.price       = res.data.product.price;
+
+                    resolve();
+                }).catch(err => {
+                    console.log(err);
+                });
+            });
+
+            Promise.all([storesPromise, categoriesPromise, productPromise]).then(() => {
+                this.ifReady = true;
+            });
+
+        },
+
+        methods: {
+            selectStore() {
+                this.store_id = this.store.id;
+            },
+            selectCategory() {
+                this.category_id = this.category.id;
+            },
+            viewProduct() {
                 this.$router.push({
                     name: 'products.view',
                     params: { id: this.$route.params.id }
                 });
-            }).catch(err => {
-                console.log(err);
-            });
-        }
-    },
+            },
+            onFileSelected(event) {
+                this.image = event.target.files[0];
+            },
+            updateProduct() {
+                this.ifReady = false;
 
-    computed: {
-        // Add ES6 methods here that needs caching
+                let formData = new FormData();
+
+                if (this.image != null) {
+                    formData.append('image', this.image);
+                }
+
+                formData.append('_method', 'PATCH');
+                formData.append('store_id', this.store_id);
+                formData.append('category_id', this.category_id);
+                formData.append('name', this.name);
+                formData.append('description', this.description);
+                formData.append('price', this.price);
+
+                axios.post('/api/products/' + this.$route.params.id, formData, {
+                    onUploadProgress: uploadEvent => {
+                        if (this.image != null) {
+                            console.log('Upload Progress: ' + Math.round((uploadEvent.loaded / uploadEvent.total) * 100) + '%');
+                        }
+                    }
+                }).then(res => {
+                    this.$router.push({
+                        name: 'products.view',
+                        params: { id: this.$route.params.id }
+                    });
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
+        }
     }
-}
 </script>

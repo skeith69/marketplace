@@ -36,11 +36,10 @@ class AdminsController extends Controller
     {
         if (! $data = AdminResource::collection($this->admin->paginate())) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Failed to retrieve resource.'
             ], 400);
         }
-    
+
         return $data;
     }
     
@@ -57,24 +56,21 @@ class AdminsController extends Controller
             'email' => 'required|string|email|max:255|unique:admins',
             'password' => 'required|string|min:6|confirmed',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Validation failed.',
                 'errors'   => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->admin->store($request)) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Failed to store resource.'
             ], 500);
         }
-    
+
         return response()->json([
-            'response' => true,
             'message'  => 'Resource successfully stored.'
         ], 200);
     }
@@ -89,13 +85,11 @@ class AdminsController extends Controller
     {
         if (! $admin = $this->admin->findOrFail($id)) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Resource does not exist.'
             ], 400);
         }
-    
+
         return response()->json([
-            'response'    => true,
             'message'     => 'Resource successfully retrieve.',
             'admin'       => $admin
         ], 200);
@@ -113,24 +107,21 @@ class AdminsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Validation failed.',
                 'errors'   => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->admin->update($request, $id)) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Failed to update resource.'
             ], 500);
         }
-    
+
         return response()->json([
-            'response' => true,
             'message'  => 'Resource successfully updated.'
         ], 200);
     }
@@ -145,13 +136,11 @@ class AdminsController extends Controller
     {
         if (! $this->admin->findOrFail($id)->delete()) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Failed to delete resource.'
             ], 400);
         }
-    
+
         return response()->json([
-            'response' => true,
             'message'  => 'Resource successfully deleted.'
         ], 200);
     }
@@ -166,13 +155,11 @@ class AdminsController extends Controller
     {
         if (! $this->admin->restore($id)) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Failed to restore resource.'
             ], 400);
         }
-    
+
         return response()->json([
-            'response' => true,
             'message'  => 'Resource successfully restored.'
         ], 200);
     }
@@ -187,14 +174,45 @@ class AdminsController extends Controller
     {
         if (! $this->admin->forceDestroy($id)) {
             return response()->json([
-                'response' => false,
                 'message'  => 'Failed to permanently delete resource.'
             ], 400);
         }
-    
+
         return response()->json([
-            'response' => true,
             'message'  => 'Resource successfully deleted permanently.'
+        ], 200);
+    }
+
+    /**
+     * Retrieve admin assigned roles.
+     *
+     * @param  int $id Admin ID
+     * @return \Illuminate\Http\Response
+     */
+    public function getAssignedRoles($id)
+    {
+        return response()->json([
+            'message'       => 'Successfully retrieve resource',
+            'assignedRoles' => $this->admin->getAssignedRoles($id)
+        ], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function toggleRole(Request $request)
+    {
+        if (! $this->admin->toggleRole($request)) {
+            return response()->json([
+                'message'  => 'Failed to toggle role.'
+            ], 400);
+        }
+
+        return response()->json([
+            'message'  => 'Role successfully toggled.'
         ], 200);
     }
 }

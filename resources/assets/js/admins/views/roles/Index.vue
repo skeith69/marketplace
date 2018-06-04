@@ -2,14 +2,14 @@
     <div>
         <div class="card">
             <div class="card-header clearfix">
-                Categories / View Categories
+                Roles / View Roles
             </div>
             <div class="card-body">
                 <table class="table table-hover table-sm">
                     <caption>
                         <div class="row">
                             <div class="col-md-9">
-                                List of Categories - Total Items {{ this.meta.total }}
+                                List of Roles - Total Items {{ this.meta.total }}
                             </div>
                             <div class="col-md-3">
                                 <div class="progress" height="30px;" v-if="showProgress">
@@ -22,17 +22,18 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Description</th>
+                            <th scope="col">Display Name</th>
                             <th scope="col">Options</th>
                         </tr>
                     </thead>
-                    <tbody v-if="categories">
-                        <tr v-for="{ id, name, description } in categories">
+                    <tbody v-if="roles">
+                        <tr v-for="{ id, name, display_name } in roles">
                             <td>{{ id }}</td>
                             <td>{{ name }}</td>
-                            <td>{{ description }}</td>
+                            <td>{{ display_name }}</td>
                             <td>
-                                <router-link class="text-info" :to="{ name: 'categories.view', params: { id: id }}">View</router-link>
+                                <router-link class="text-info" :to="{ name: 'roles.view', params: { id: id }}">View</router-link> | 
+                                <router-link class="text-success" :to="{ name: 'roles.assign-permissions', params: { id: id } }">Assign Permissions</router-link>
                             </td>
                         </tr>
                     </tbody>
@@ -106,10 +107,10 @@
     </div>
 </template>
 <script>
-const getCategories = (page, per_page, callback) => {
+const getRoles = (page, per_page, callback) => {
     const params = { page, per_page };
 
-    axios.get('/api/categories', { params }).then(res => {
+    axios.get('/api/roles', { params }).then(res => {
         callback(null, res.data);
     }).catch(error => {
         if (error.response.status == 401) {
@@ -125,7 +126,7 @@ const getCategories = (page, per_page, callback) => {
 export default {
     data() {
         return {
-            categories: null,
+            roles: null,
             meta: {
                 current_page: null,
                 from: null,
@@ -149,18 +150,18 @@ export default {
 
     beforeRouteEnter (to, from, next) {
         if (to.query.per_page == null) {
-            getCategories(to.query.page, 10, (err, data) => {
+            getRoles(to.query.page, 10, (err, data) => {
                 next(vm => vm.setData(err, data));
             });
         } else {
-            getCategories(to.query.page, to.query.per_page, (err, data) => {
+            getRoles(to.query.page, to.query.per_page, (err, data) => {
                 next(vm => vm.setData(err, data));
             });
         }
     },
 
     beforeRouteUpdate (to, from, next) {
-        getCategories(to.query.page, this.meta.per_page, (err, data) => {
+        getRoles(to.query.page, this.meta.per_page, (err, data) => {
             this.setData(err, data);
             next();
         });
@@ -209,7 +210,7 @@ export default {
         goToFirstPage() {
             this.showProgress = true;
             this.$router.push({
-                name: 'categories.index',
+                name: 'roles.index',
                 query: {
                     page: 1,
                     per_page: this.meta.per_page
@@ -219,7 +220,7 @@ export default {
         goToPage(page = null) {
             this.showProgress = true;
             this.$router.push({
-                name: 'categories.index',
+                name: 'roles.index',
                 query: {
                     page,
                     per_page: this.meta.per_page
@@ -229,7 +230,7 @@ export default {
         goToLastPage() {
             this.showProgress = true;
             this.$router.push({
-                name: 'categories.index',
+                name: 'roles.index',
                 query: {
                     page: this.meta.last_page,
                     per_page: this.meta.per_page
@@ -239,7 +240,7 @@ export default {
         goToNextPage() {
             this.showProgress = true;
             this.$router.push({
-                name: 'categories.index',
+                name: 'roles.index',
                 query: {
                     page: this.nextPage,
                     per_page: this.meta.per_page
@@ -249,20 +250,20 @@ export default {
         goToPreviousPage() {
             this.showProgress = true;
             this.$router.push({
-                name: 'categories.index',
+                name: 'roles.index',
                 query: {
                     page: this.prevPage,
                     per_page: this.meta.per_page
                 }
             });
         },
-        setData(err, { data: categories, links, meta }) {
+        setData(err, { data: roles, links, meta }) {
             this.pageNumbers = [];
 
             if (err) {
                 this.error = err.toString();
             } else {
-                this.categories = categories;
+                this.roles = roles;
                 this.links = links;
                 this.meta = meta;
             }
@@ -323,7 +324,7 @@ export default {
         changePerPage() {
             this.showProgress = true;
             this.$router.push({
-                name: 'categories.index',
+                name: 'roles.index',
                 query: {
                     page: 1,
                     per_page: this.meta.per_page

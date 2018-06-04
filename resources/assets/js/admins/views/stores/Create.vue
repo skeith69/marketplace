@@ -8,6 +8,10 @@
                 <div v-if="ifReady">
                     <form ref="createNewAdminForm" role="form" method="POST" accept-charset="utf-8" v-on:submit.prevent="createNewAdmin">
                         <div class="form-group">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control-file" @change="onFileSelected" id="image" required>
+                        </div>
+                        <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" v-model="name" autocomplete="off" minlength="2" maxlength="255" required>
                         </div>
@@ -31,33 +35,30 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            ifReady: true,
-            name: '',
-            address: ''
-        };
-    },
+    export default {
+        data() {
+            return {
+                ifReady: true,
+                name: '',
+                address: ''
+            };
+        },
 
-    mounted() {
+        methods: {
+            createNewAdmin() {
+                this.ifReady = false;
 
-    },
-
-    methods: {
-        createNewAdmin() {
-            this.ifReady = false;
-            
-            axios.post('/api/stores', this.$data).then(res => {
-                this.$router.push({ name: 'stores.index' });
-            }).catch(err => {
-                console.log(err);
-            });
+                let formData = new FormData();
+                formData.append('image', this.image);
+                formData.append('name', this.name);
+                formData.append('address', this.address);
+                
+                axios.post('/api/stores', formData).then(res => {
+                    this.$router.push({ name: 'stores.index' });
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
         }
-    },
-
-    computed: {
-        // Add ES6 methods here that needs caching
     }
-}
 </script>

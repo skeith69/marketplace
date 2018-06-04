@@ -53,54 +53,50 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            ifReady: false,
-            admin: ''
-        };
-    },
+    export default {
+        data() {
+            return {
+                ifReady: false,
+                admin: ''
+            };
+        },
 
-    mounted() {
-        let promise = new Promise((resolve, reject) => {
-            axios.get('/api/admins/' + this.$route.params.id).then(res => {
-                this.admin = res.data.admin;
-                resolve();
+        mounted() {
+            let promise = new Promise((resolve, reject) => {
+                axios.get('/api/admins/' + this.$route.params.id).then(res => {
+                    this.admin = res.data.admin;
+                    resolve();
+                });
             });
-        });
 
-        promise.then(() => {
-            this.ifReady = true;
-        });
-    },
-
-    methods: {
-        viewAdmins() {
-            this.$router.push({
-                name: 'admins.index'
+            promise.then(() => {
+                this.ifReady = true;
             });
         },
-        editAdmin() {
-            this.$router.push({
-                name: 'admins.edit',
-                params: { id: this.admin.id }
-            });
-        },
-        openDeleteAdminModal() {
-            $('#deleteAdminModal').modal('show');
-        },
-        deleteAdmin() {
-            $('#deleteAdminModal').modal('hide');
-            axios.delete('/api/admins/' + this.$route.params.id).then(res => {
-                this.$router.push({ name: 'admins.index' });
-            }).catch(err => {
-                console.log(err);
-            });
+
+        methods: {
+            viewAdmins() {
+                this.$router.push({
+                    name: 'admins.index'
+                });
+            },
+            editAdmin() {
+                this.$router.push({
+                    name: 'admins.edit',
+                    params: { id: this.admin.id }
+                });
+            },
+            openDeleteAdminModal() {
+                $('#deleteAdminModal').modal('show');
+            },
+            deleteAdmin() {
+                $('#deleteAdminModal').modal('hide');
+                axios.delete('/api/admins/' + this.$route.params.id).then(res => {
+                    this.$router.push({ name: 'admins.index' });
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
         }
-    },
-
-    computed: {
-        // Add ES6 methods here that needs caching
     }
-}
 </script>

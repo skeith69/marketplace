@@ -2,6 +2,7 @@
 
 Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.dev'], function () {
     Auth::routes();
+
     Route::get('/{any}', 'SpaController@index')->where('any', '.*')->name('admins.index');
 });
 

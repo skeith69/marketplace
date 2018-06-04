@@ -37,10 +37,6 @@ export default {
         });
     },
 
-    mounted() {
-        //
-    },
-
     methods: {
         logout() {
             axios.post('/logout').then(res => {

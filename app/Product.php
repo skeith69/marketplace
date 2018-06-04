@@ -2,10 +2,15 @@
 
 namespace App;
 
+use App\Traits\Filtering;
+use App\Traits\Imaging;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use SoftDeletes, Filtering, Imaging;
+    
     /**
      * Products table.
      *
@@ -19,9 +24,30 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'store_id', 'category_id', 'name',
+        'image', 'store_id', 'category_id', 'name',
         'description', 'price', 'status'
     ];
+
+    /**
+     * Run functions on boot.
+     *
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            static::storeImage($model);
+        });
+
+        static::updating(function ($model) {
+            static::updateImage($model);
+        });
+
+        static::deleting(function ($model) {
+            static::deleteImage($model);
+        });
+    }
 
     /**
      * The product belongs to a category.

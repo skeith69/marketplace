@@ -15,6 +15,7 @@ class CreateStoresMigration extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('image')->nullable();
             $table->string('name');
             $table->text('address');
             $table->timestamps();

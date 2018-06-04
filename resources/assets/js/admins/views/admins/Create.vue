@@ -50,10 +50,6 @@ export default {
         };
     },
 
-    mounted() {
-
-    },
-
     methods: {
         createNewAdmin() {
             this.ifReady = false;
@@ -64,10 +60,6 @@ export default {
                 console.log(err);
             });
         }
-    },
-
-    computed: {
-        // Add ES6 methods here that needs caching
     }
 }
 </script>

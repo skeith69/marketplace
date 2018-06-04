@@ -25,7 +25,7 @@ class ProductRepository extends Repository
      */
     public function paginate($length = 10)
     {
-        return $this->product->with('category')->paginate($length);
+        return $this->product->with('category', 'store')->paginate($length);
     }
 
     /**

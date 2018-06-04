@@ -2,10 +2,15 @@
 
 namespace App;
 
+use App\Traits\Filtering;
+use App\Traits\Imaging;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Store extends Model
 {
+    use SoftDeletes, Filtering, Imaging;
+    
     /**
      * Stores table.
      *
@@ -21,6 +26,27 @@ class Store extends Model
     protected $fillable = [
         'name', 'address'
     ];
+
+    /**
+     * Run functions on boot.
+     *
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            static::storeImage($model);
+        });
+
+        static::updating(function ($model) {
+            static::updateImage($model);
+        });
+
+        static::deleting(function ($model) {
+            static::deleteImage($model);
+        });
+    }
 
     /**
      * The store has many admins.

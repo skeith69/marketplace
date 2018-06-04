@@ -6,16 +6,16 @@ use App\Traits\Filtering;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class Permission extends Model
 {
     use SoftDeletes, Filtering;
-    
+
     /**
-     * Categories table.
+     * Permissions table.
      *
      * @var string
      */
-    protected $table = 'categories';
+    protected $table = 'permissions';
 
     /**
      * The attributes that are mass assignable.
@@ -23,16 +23,23 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description'
+        'name', 'display_name', 'description'
     ];
 
     /**
-     * The category has many products
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
+
+    /**
+     * Permissions has many roles.
      *
      * @return array object
      */
-    public function products()
+    public function roles()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Role::class);
     }
 }

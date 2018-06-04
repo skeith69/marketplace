@@ -2,13 +2,15 @@
 
 namespace App;
 
+use App\Traits\Filtering;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 class Admin extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, SoftDeletes, Filtering;
 
     /**
      * Admins table.
@@ -46,6 +48,16 @@ class Admin extends Authenticatable
         static::creating(function ($model) {
             //$model->password = bcrypt($model->password);
         });
+    }
+
+    /**
+     * The admin has many roles.
+     *
+     * @return array object
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
     }
 
     /**

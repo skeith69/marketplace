@@ -3,28 +3,28 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProductResource;
-use App\Repositories\ProductRepository;
+use App\Http\Resources\PermissionResource;
+use App\Repositories\PermissionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ProductsController extends Controller
+class PermissionsController extends Controller
 {
     /**
-     * Product repository.
+     * Permission repository.
      *
-     * @var App\Repositories\ProductRepository
+     * @var App\Repositories\PermissionRepository
      */
-    protected $product;
+    protected $permission;
     
     /**
-     * Create new instance of product controller.
+     * Create new instance of permission controller.
      *
-     * @param ProductRepository product Product repository
+     * @param PermissionRepository permission Permission repository
      */
-    public function __construct(ProductRepository $product)
+    public function __construct(PermissionRepository $permission)
     {
-        $this->product = $product;
+        $this->permission = $permission;
     }
     
     /**
@@ -34,7 +34,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        if (! $data = ProductResource::collection($this->product->paginate())) {
+        if (! $data = PermissionResource::collection($this->permission->paginate())) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to retrieve resource.'
@@ -53,12 +53,9 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image'       => 'required|image|max:2000',
-            'store_id'    => 'required|integer',
-            'category_id' => 'required|integer',
-            'name'        => 'required|min:2|max:255',
-            'description' => 'required|min:2|max:500',
-            'price'       => 'required|numeric'
+            'name'         => 'required|min:2|max:255',
+            'display_name' => 'required|min:2|max:255',
+            'description'  => 'required|min:2|max:500'
         ]);
     
         if ($validator->fails()) {
@@ -69,7 +66,7 @@ class ProductsController extends Controller
             ], 400);
         }
     
-        if (! $this->product->store($request)) {
+        if (! $this->permission->store($request)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to store resource.'
@@ -90,7 +87,7 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        if (! $product = $this->product->findOrFail($id)) {
+        if (! $permission = $this->permission->findOrFail($id)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Resource does not exist.'
@@ -100,7 +97,7 @@ class ProductsController extends Controller
         return response()->json([
             'response'    => true,
             'message'     => 'Resource successfully retrieve.',
-            'product' => $product
+            'permission' => $permission
         ], 200);
     }
     
@@ -114,12 +111,9 @@ class ProductsController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'image'       => 'image|max:2000',
-            'store_id'    => 'required|integer',
-            'category_id' => 'required|integer',
-            'name'        => 'required|min:2|max:255',
-            'description' => 'required|min:2|max:500',
-            'price'       => 'required|numeric'
+            'name'         => 'required|min:2|max:255',
+            'display_name' => 'required|min:2|max:255',
+            'description'  => 'required|min:2|max:500'
         ]);
     
         if ($validator->fails()) {
@@ -130,7 +124,7 @@ class ProductsController extends Controller
             ], 400);
         }
     
-        if (! $this->product->update($request, $id)) {
+        if (! $this->permission->update($request, $id)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to update resource.'
@@ -151,7 +145,7 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        if (! $this->product->findOrFail($id)->delete()) {
+        if (! $this->permission->findOrFail($id)->delete()) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to delete resource.'
@@ -172,7 +166,7 @@ class ProductsController extends Controller
      */
     public function restore($id)
     {
-        if (! $this->product->restore($id)) {
+        if (! $this->permission->restore($id)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to restore resource.'
@@ -193,7 +187,7 @@ class ProductsController extends Controller
      */
     public function forceDestroy($id)
     {
-        if (! $this->product->forceDestroy($id)) {
+        if (! $this->permission->forceDestroy($id)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to permanently delete resource.'
@@ -203,6 +197,27 @@ class ProductsController extends Controller
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully deleted permanently.'
+        ], 200);
+    }
+
+    /**
+     * Retrieve all resources.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function all()
+    {
+        if (! $permissions = $this->permission->all()) {
+            return response()->json([
+                'response' => false,
+                'message'  => 'Resources does not exist.'
+            ], 400);
+        }
+
+        return response()->json([
+            'response'    => true,
+            'message'     => 'Resources successfully retrieve.',
+            'permissions' => $permissions
         ], 200);
     }
 }
