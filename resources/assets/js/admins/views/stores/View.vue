@@ -98,10 +98,6 @@ export default {
                 console.log(err);
             });
         }
-    },
-
-    computed: {
-        // Add ES6 methods here that needs caching
     }
 }
 </script>

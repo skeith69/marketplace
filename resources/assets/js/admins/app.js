@@ -47,6 +47,8 @@ const store = new Vuex.Store({
     }
 });
 
+window.Store = store;
+
 //select filtering
 Vue.component('vue-select-component', VueSelect);
 
