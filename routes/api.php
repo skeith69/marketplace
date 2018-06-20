@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.dev'], function () {
+Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.corvenik.com'], function () {
     // Authentication
     Route::get('auth/get-admin', 'AuthController@getAdmin');
 
@@ -55,6 +55,6 @@ Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.dev'], fun
     ]);
 });
 
-Route::group(['namespace' => 'Users', 'domain' => 'marketplace.dev'], function () {
+Route::group(['namespace' => 'Users', 'domain' => 'marketplace.corvenik.com'], function () {
     //
 });
