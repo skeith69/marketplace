@@ -14,11 +14,11 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="store">Store</label>
-                                <vue-select-component v-model="store" @input="selectStore()" label="name" :options="stores"></vue-select-component>
+                                <vue-select-component v-model="store" @input="selectStore()" label="name" :options="stores" required></vue-select-component>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="category">Category</label>
-                                <vue-select-component v-model="category" @input="selectCategory()" label="name" :options="categories"></vue-select-component>
+                                <vue-select-component v-model="category" @input="selectCategory()" label="name" :options="categories" required></vue-select-component>
                             </div>
                         </div>
                         <div class="row">

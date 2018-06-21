@@ -115,39 +115,41 @@ trait Imaging
      */
     public static function storeImage($model, $sizes = null)
     {
-        self::createDirectory();
+        if (request()->hasFile('image') || request()->hasFile('picture') || request()->hasFile('photo')) {
+            self::createDirectory();
 
-        $storagePath       = self::storagePath();
-        $resolutions       = self::resolutions();
-        $defaultResolution = self::defaultResolution();
-        $compressionRate   = self::compressionRate();
+            $storagePath       = self::storagePath();
+            $resolutions       = self::resolutions();
+            $defaultResolution = self::defaultResolution();
+            $compressionRate   = self::compressionRate();
 
-        $image        = request()->image;
-        $imageName    = uniqid() . '.jpg';
-        $model->image = $imageName;
+            $image        = request()->image;
+            $imageName    = uniqid() . '.jpg';
+            $model->image = $imageName;
 
-        if ($sizes != null && is_array($sizes)) {
-            foreach ($sizes as $size) {
-                foreach ($resolutions as $key => $value) {
-                    if ($defaultResolution != $size && $key == $size) {
-                        Image::make($image)->resize($value['width'], $value['height'])
+            if ($sizes != null && is_array($sizes)) {
+                foreach ($sizes as $size) {
+                    foreach ($resolutions as $key => $value) {
+                        if ($defaultResolution != $size && $key == $size) {
+                            Image::make($image)->resize($value['width'], $value['height'])
                             ->encode('jpg', $compressionRate)
                             ->save(
                                 storage_path('app/public/' . $storagePath . '/' . $value['width'] . '-' . $value['height'] . '-' . $imageName),
                                 $compressionRate
                             );
+                        }
                     }
                 }
             }
-        }
 
-        Image::make($image)->resize(
-            $resolutions[$defaultResolution]['width'],
-            $resolutions[$defaultResolution]['height']
-        )->encode('jpg', $compressionRate)->save(
-            storage_path('app/public/' . $storagePath . '/' . $imageName),
-            $compressionRate
-        );
+            Image::make($image)->resize(
+                $resolutions[$defaultResolution]['width'],
+                $resolutions[$defaultResolution]['height']
+            )->encode('jpg', $compressionRate)->save(
+                storage_path('app/public/' . $storagePath . '/' . $imageName),
+                $compressionRate
+            );
+        }
     }
 
     /**

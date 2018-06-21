@@ -6,6 +6,13 @@
             </div>
             <div class="card-body">
                 <div v-if="ifReady">
+                    <div v-if="imagePath">
+                        <div class="row">
+                            <div class="offset-md-4 col-md-4">
+                                <img class="card-img-top" :src="imagePath" alt="image">
+                            </div>
+                        </div>
+                    </div>
                     <fieldset disabled>
                         <div class="form-group">
                             <label for="name">Name</label>
@@ -53,51 +60,53 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            ifReady: false,
-            store: ''
-        };
-    },
+    export default {
+        data() {
+            return {
+                ifReady: false,
+                imagePath: '',
+                store: ''
+            };
+        },
 
-    mounted() {
-        let promise = new Promise((resolve, reject) => {
-            axios.get('/api/stores/' + this.$route.params.id).then(res => {
-                this.store = res.data.store;
-                resolve();
+        mounted() {
+            let promise = new Promise((resolve, reject) => {
+                axios.get('/api/stores/' + this.$route.params.id).then(res => {
+                    this.imagePath = '/storage/images/' + res.data.store.image;
+                    this.store = res.data.store;
+                    resolve();
+                });
             });
-        });
 
-        promise.then(() => {
-            this.ifReady = true;
-        });
-    },
-
-    methods: {
-        viewStores() {
-            this.$router.push({
-                name: 'stores.index'
+            promise.then(() => {
+                this.ifReady = true;
             });
         },
-        editStore() {
-            this.$router.push({
-                name: 'stores.edit',
-                params: { id: this.store.id }
-            });
-        },
-        openDeleteStoreModal() {
-            $('#deleteStoreModal').modal('show');
-        },
-        deleteStore() {
-            $('#deleteStoreModal').modal('hide');
 
-            axios.delete('/api/stores/' + this.$route.params.id).then(res => {
-                this.$router.push({ name: 'stores.index' });
-            }).catch(err => {
-                console.log(err);
-            });
+        methods: {
+            viewStores() {
+                this.$router.push({
+                    name: 'stores.index'
+                });
+            },
+            editStore() {
+                this.$router.push({
+                    name: 'stores.edit',
+                    params: { id: this.store.id }
+                });
+            },
+            openDeleteStoreModal() {
+                $('#deleteStoreModal').modal('show');
+            },
+            deleteStore() {
+                $('#deleteStoreModal').modal('hide');
+
+                axios.delete('/api/stores/' + this.$route.params.id).then(res => {
+                    this.$router.push({ name: 'stores.index' });
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
         }
     }
-}
 </script>
