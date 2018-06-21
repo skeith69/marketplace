@@ -8,7 +8,7 @@
                 <div v-if="ifReady">
                     <form ref="createNewAdminForm" role="form" method="POST" accept-charset="utf-8" v-on:submit.prevent="createNewAdmin">
                         <div class="form-group">
-                            <label for="image">Image</label>
+                            <label for="image">Image <span class="text-info">*optional</span></label>
                             <input type="file" class="form-control-file" @change="onFileSelected" id="image">
                         </div>
                         <div class="form-group">
