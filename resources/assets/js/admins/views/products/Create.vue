@@ -106,7 +106,11 @@
                 this.ifReady = false;
 
                 let formData = new FormData();
-                formData.append('image', this.image);
+
+                if (this.image != null) {
+                    formData.append('image', this.image);
+                }
+                
                 formData.append('store_id', this.store_id);
                 formData.append('category_id', this.category_id);
                 formData.append('name', this.name);
@@ -122,6 +126,7 @@
                 }).then(res => {
                     this.$router.push({ name: 'products.index' });
                 }).catch(err => {
+                    this.ifReady = true;
                     console.log(err);
                 });
             },

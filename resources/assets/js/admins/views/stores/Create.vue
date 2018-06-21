@@ -9,7 +9,7 @@
                     <form ref="createNewAdminForm" role="form" method="POST" accept-charset="utf-8" v-on:submit.prevent="createNewAdmin">
                         <div class="form-group">
                             <label for="image">Image</label>
-                            <input type="file" class="form-control-file" @change="onFileSelected" id="image" required>
+                            <input type="file" class="form-control-file" @change="onFileSelected" id="image">
                         </div>
                         <div class="form-group">
                             <label for="name">Name</label>
@@ -45,17 +45,25 @@
         },
 
         methods: {
+            onFileSelected(event) {
+                this.image = event.target.files[0];
+            },
             createNewAdmin() {
                 this.ifReady = false;
 
                 let formData = new FormData();
-                formData.append('image', this.image);
+                
+                if (this.image != null) {
+                    formData.append('image', this.image);
+                }
+
                 formData.append('name', this.name);
                 formData.append('address', this.address);
                 
                 axios.post('/api/stores', formData).then(res => {
                     this.$router.push({ name: 'stores.index' });
                 }).catch(err => {
+                    this.ifReady = true;
                     console.log(err);
                 });
             }

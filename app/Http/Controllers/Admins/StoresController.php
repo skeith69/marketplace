@@ -53,6 +53,7 @@ class StoresController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'image'   => 'required|image|max:5000',
             'name'    => 'required|min:2|max:255',
             'address' => 'required|min:2|max:500'
         ]);
@@ -110,6 +111,7 @@ class StoresController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
+            'image'   => 'required|image|max:5000',
             'name'    => 'required|min:2|max:255',
             'address' => 'required|min:2|max:500'
         ]);
