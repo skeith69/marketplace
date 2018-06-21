@@ -154,9 +154,8 @@
         },
 
         beforeRouteEnter (to, from, next) {
-            console.log(Store.state);
             if (to.query.per_page == null) {
-                getProducts(to.query.page, 10, (err, data) => {
+                getProducts(to.query.page, to.query.per_page, (err, data) => {
                     next(vm => vm.setData(err, data));
                 });
             } else {

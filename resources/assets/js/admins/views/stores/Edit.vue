@@ -6,7 +6,11 @@
             </div>
             <div class="card-body">
                 <div v-if="ifReady">
-                    <form ref="editStoreForm" role="form" method="POST" accept-charset="utf-8" v-on:submit.prevent="editStore">
+                    <form v-on:submit.prevent="editStore">
+                        <div class="form-group">
+                            <label for="image">Image <span class="text-info">*optional</span></label>
+                            <input type="file" class="form-control-file" @change="onFileSelected" id="image">
+                        </div>
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" v-model="name" autocomplete="off" minlength="2" maxlength="255" required>
@@ -31,55 +35,65 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            ifReady: false,
-            id: '',
-            name: '',
-            address: ''
-        };
-    },
+    export default {
+        data() {
+            return {
+                ifReady: false,
+                id: '',
+                image: null,
+                name: '',
+                address: ''
+            };
+        },
 
-    mounted() {
-        let promise = new Promise((resolve, reject) => {
-            axios.get('/api/stores/' + this.$route.params.id).then(res => {
-                this.id      = res.data.store.id;
-                this.name    = res.data.store.name;
-                this.address = res.data.store.address;
+        mounted() {
+            let promise = new Promise((resolve, reject) => {
+                axios.get('/api/stores/' + this.$route.params.id).then(res => {
+                    this.id      = res.data.store.id;
+                    this.name    = res.data.store.name;
+                    this.address = res.data.store.address;
 
-                resolve();
+                    resolve();
+                });
             });
-        });
 
-        promise.then(() => {
-            this.ifReady = true;
-        });
-    },
-
-    methods: {
-        viewStore() {
-            this.$router.push({
-                name: 'stores.view',
-                params: { id: this.$route.params.id }
+            promise.then(() => {
+                this.ifReady = true;
             });
         },
-        updateStore() {
-            this.ifReady = false;
 
-            axios.patch('/api/stores/' + this.$route.params.id, this.$data).then(res => {
+        methods: {
+            onFileSelected(event) {
+                this.image = event.target.files[0];
+            },
+            viewStore() {
                 this.$router.push({
                     name: 'stores.view',
                     params: { id: this.$route.params.id }
                 });
-            }).catch(err => {
-                console.log(err);
-            });
-        }
-    },
+            },
+            updateStore() {
+                this.ifReady = false;
 
-    computed: {
-        // Add ES6 methods here that needs caching
+                let formData = new FormData();
+                
+                if (this.image != null) {
+                    formData.append('image', this.image);
+                }
+
+                formData.append('_method', 'PATCH');
+                formData.append('name', this.name);
+                formData.append('address', this.address);
+
+                axios.post('/api/stores/' + this.$route.params.id, formData).then(res => {
+                    this.$router.push({
+                        name: 'stores.view',
+                        params: { id: this.$route.params.id }
+                    });
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
+        }
     }
-}
 </script>

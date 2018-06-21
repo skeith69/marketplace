@@ -24,7 +24,7 @@ class Store extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'address'
+        'image', 'name', 'address'
     ];
 
     /**

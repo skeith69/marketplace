@@ -6,7 +6,7 @@
             </div>
             <div class="card-body">
                 <div v-if="ifReady">
-                    <form ref="createNewAdminForm" role="form" method="POST" accept-charset="utf-8" v-on:submit.prevent="createNewAdmin">
+                    <form v-on:submit.prevent="createNewAdmin">
                         <div class="form-group">
                             <label for="image">Image <span class="text-info">*optional</span></label>
                             <input type="file" class="form-control-file" @change="onFileSelected" id="image">
@@ -39,6 +39,7 @@
         data() {
             return {
                 ifReady: true,
+                image: null,
                 name: '',
                 address: ''
             };
