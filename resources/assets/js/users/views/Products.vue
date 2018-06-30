@@ -2,16 +2,17 @@
     <div>
         <div class="container mt-3">
             <div class="card-columns">
-                <div class="card" v-for="store in stores">
-                    <div v-if="store.image">
-                        <img class="card-img-top" :src="'/storage/images/' + store.image" alt="">
+                <div class="card" v-for="product in products">
+                    <div v-if="product.image">
+                        <img class="card-img-top" :src="'/storage/images/' + product.image" alt="">
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">{{ store.name }}</h5>
-                        <p class="card-text">{{ store.address }}</p>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <footer class="blockquote-footer"><cite title="Source Title">{{ product.store.name }}</cite></footer>
                     </div>
                     <div class="card-footer text-muted">
-                        <button class="btn btn-sm btn-info" @click="viewProducts(store.id)">View Products</button>
+                        <span class="text-success">PHP {{ product.price }}</span>
                     </div>
                 </div>
             </div>
@@ -24,14 +25,14 @@
         data() {
             return {
                 ifReady: false,
-                stores: []
+                products: []
             };
         },
 
         mounted() {
             let promise = new Promise((resolve, reject) => {
-                axios.get('/api/stores').then(res => {
-                    this.stores = res.data.data;
+                axios.get('/api/stores/' + this.$route.params.id + '/products').then(res => {
+                    this.products = res.data.products.data;
                     resolve();
                 });
             });
@@ -42,12 +43,11 @@
         },
 
         methods: {
-            viewProducts(storeId) {
+            viewStores() {
                 this.$router.push({
-                    name: 'stores.products',
-                    params: { id: storeId }
+                    name: 'home'
                 });
-            }
+            },
         }
     }
 </script>

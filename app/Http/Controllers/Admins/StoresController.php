@@ -16,7 +16,7 @@ class StoresController extends Controller
      * @var App\Repositories\StoreRepository
      */
     protected $store;
-    
+
     /**
      * Create new instance of store controller.
      *
@@ -26,7 +26,7 @@ class StoresController extends Controller
     {
         $this->store = $store;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -36,14 +36,13 @@ class StoresController extends Controller
     {
         if (! $data = StoreResource::collection($this->store->paginate())) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Failed to retrieve resource.'
+                'message' => 'Failed to retrieve resource'
             ], 400);
         }
-    
+
         return $data;
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -57,28 +56,25 @@ class StoresController extends Controller
             'name'    => 'required|min:2|max:255',
             'address' => 'required|min:2|max:500'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Validation failed.',
+                'message'  => 'Validation failed',
                 'errors'   => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->store->store($request)) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Failed to store resource.'
+                'message'  => 'Failed to store resource'
             ], 500);
         }
-    
+
         return response()->json([
-            'response' => true,
-            'message'  => 'Resource successfully stored.'
+            'message'  => 'Resource successfully stored'
         ], 200);
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -89,18 +85,16 @@ class StoresController extends Controller
     {
         if (! $store = $this->store->findOrFail($id)) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Resource does not exist.'
+                'message' => 'Resource does not exist'
             ], 400);
         }
-    
+
         return response()->json([
-            'response'    => true,
-            'message'     => 'Resource successfully retrieve.',
-            'store' => $store
+            'message' => 'Resource successfully retrieve',
+            'store'   => $store
         ], 200);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -115,28 +109,25 @@ class StoresController extends Controller
             'name'    => 'required|min:2|max:255',
             'address' => 'required|min:2|max:500'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Validation failed.',
-                'errors'   => $validator->errors()
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->store->update($request, $id)) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Failed to update resource.'
+                'message' => 'Failed to update resource'
             ], 500);
         }
-    
+
         return response()->json([
-            'response' => true,
-            'message'  => 'Resource successfully updated.'
+            'message' => 'Resource successfully updated'
         ], 200);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -147,17 +138,15 @@ class StoresController extends Controller
     {
         if (! $this->store->findOrFail($id)->delete()) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Failed to delete resource.'
+                'message' => 'Failed to delete resource'
             ], 400);
         }
-    
+
         return response()->json([
-            'response' => true,
-            'message'  => 'Resource successfully deleted.'
+            'message' => 'Resource successfully deleted'
         ], 200);
     }
-    
+
     /**
      * Restore the specified resource from storage.
      *
@@ -168,17 +157,15 @@ class StoresController extends Controller
     {
         if (! $this->store->restore($id)) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Failed to restore resource.'
+                'message' => 'Failed to restore resource'
             ], 400);
         }
-    
+
         return response()->json([
-            'response' => true,
-            'message'  => 'Resource successfully restored.'
+            'message' => 'Resource successfully restored'
         ], 200);
     }
-    
+
     /**
      * Forcefully remove the specified resource from storage.
      *
@@ -189,14 +176,12 @@ class StoresController extends Controller
     {
         if (! $this->store->forceDestroy($id)) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Failed to permanently delete resource.'
+                'message' => 'Failed to permanently delete resource'
             ], 400);
         }
-    
+
         return response()->json([
-            'response' => true,
-            'message'  => 'Resource successfully deleted permanently.'
+            'message' => 'Resource successfully deleted permanently'
         ], 200);
     }
 
@@ -209,15 +194,13 @@ class StoresController extends Controller
     {
         if (! $stores = $this->store->all()) {
             return response()->json([
-                'response' => false,
-                'message'  => 'Resources does not exist.'
+                'message' => 'Resources does not exist'
             ], 400);
         }
 
         return response()->json([
-            'response' => true,
-            'message'  => 'Resources successfully retrieve.',
-            'stores'   => $stores
+            'message' => 'Resources successfully retrieve',
+            'stores'  => $stores
         ], 200);
     }
 }

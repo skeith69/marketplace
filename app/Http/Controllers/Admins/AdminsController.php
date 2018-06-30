@@ -16,7 +16,7 @@ class AdminsController extends Controller
      * @var App\Repositories\AdminRepository
      */
     protected $admin;
-    
+
     /**
      * Create new instance of admin controller.
      *
@@ -26,7 +26,7 @@ class AdminsController extends Controller
     {
         $this->admin = $admin;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -36,13 +36,13 @@ class AdminsController extends Controller
     {
         if (! $data = AdminResource::collection($this->admin->paginate())) {
             return response()->json([
-                'message'  => 'Failed to retrieve resource.'
+                'message' => 'Failed to retrieve resource'
             ], 400);
         }
 
         return $data;
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -52,29 +52,29 @@ class AdminsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:admins',
-            'password' => 'required|string|min:6|confirmed',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:admins',
+            'password' => 'required|string|min:6|confirmed'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'message'  => 'Validation failed.',
-                'errors'   => $validator->errors()
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors()
             ], 400);
         }
 
         if (! $this->admin->store($request)) {
             return response()->json([
-                'message'  => 'Failed to store resource.'
+                'message' => 'Failed to store resource'
             ], 500);
         }
 
         return response()->json([
-            'message'  => 'Resource successfully stored.'
+            'message' => 'Resource successfully stored'
         ], 200);
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -85,16 +85,16 @@ class AdminsController extends Controller
     {
         if (! $admin = $this->admin->findOrFail($id)) {
             return response()->json([
-                'message'  => 'Resource does not exist.'
+                'message' => 'Resource does not exist'
             ], 400);
         }
 
         return response()->json([
-            'message'     => 'Resource successfully retrieve.',
-            'admin'       => $admin
+            'message' => 'Resource successfully retrieve',
+            'admin'   => $admin
         ], 200);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -110,22 +110,22 @@ class AdminsController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message'  => 'Validation failed.',
-                'errors'   => $validator->errors()
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors()
             ], 400);
         }
 
         if (! $this->admin->update($request, $id)) {
             return response()->json([
-                'message'  => 'Failed to update resource.'
+                'message' => 'Failed to update resource'
             ], 500);
         }
 
         return response()->json([
-            'message'  => 'Resource successfully updated.'
+            'message' => 'Resource successfully updated'
         ], 200);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -136,15 +136,15 @@ class AdminsController extends Controller
     {
         if (! $this->admin->findOrFail($id)->delete()) {
             return response()->json([
-                'message'  => 'Failed to delete resource.'
+                'message' => 'Failed to delete resource'
             ], 400);
         }
 
         return response()->json([
-            'message'  => 'Resource successfully deleted.'
+            'message' => 'Resource successfully deleted'
         ], 200);
     }
-    
+
     /**
      * Restore the specified resource from storage.
      *
@@ -155,15 +155,15 @@ class AdminsController extends Controller
     {
         if (! $this->admin->restore($id)) {
             return response()->json([
-                'message'  => 'Failed to restore resource.'
+                'message' => 'Failed to restore resource'
             ], 400);
         }
 
         return response()->json([
-            'message'  => 'Resource successfully restored.'
+            'message' => 'Resource successfully restored'
         ], 200);
     }
-    
+
     /**
      * Forcefully remove the specified resource from storage.
      *
@@ -174,12 +174,12 @@ class AdminsController extends Controller
     {
         if (! $this->admin->forceDestroy($id)) {
             return response()->json([
-                'message'  => 'Failed to permanently delete resource.'
+                'message' => 'Failed to permanently delete resource'
             ], 400);
         }
 
         return response()->json([
-            'message'  => 'Resource successfully deleted permanently.'
+            'message' => 'Resource successfully deleted permanently'
         ], 200);
     }
 
@@ -207,12 +207,12 @@ class AdminsController extends Controller
     {
         if (! $this->admin->toggleRole($request)) {
             return response()->json([
-                'message'  => 'Failed to toggle role.'
+                'message' => 'Failed to toggle role'
             ], 400);
         }
 
         return response()->json([
-            'message'  => 'Role successfully toggled.'
+            'message' => 'Role successfully toggled'
         ], 200);
     }
 }

@@ -118,12 +118,12 @@
     export default {
         data() {
             return {
-
+                assignedRoles: [],
+                permissions: []
             }
         },
 
         mounted() {
-            
         }
     }
 </script>

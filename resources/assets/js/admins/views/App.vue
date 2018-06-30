@@ -1,29 +1,45 @@
 <template>
     <div>
         <navbar-component></navbar-component>
-            <div class="container-fluid mb-5">
-                <div class="row">
-                    <div class="col-md-2" style="padding-right: 0px;">
-                        <sidebar-component></sidebar-component>
-                    </div>
-                    <div class="col-md-10">
-                        <div class="mt-3">
-                            <transition name="fade" mode="out-in">
-                                <router-view class="view"></router-view>
-                            </transition>
-                        </div>
+        <div class="container-fluid mb-5">
+            <div class="row">
+                <div class="col-md-2 sidebar-no-right-padding">
+                    <sidebar-component></sidebar-component>
+                </div>
+                <div class="col-md-10">
+                    <div class="mt-3">
+                        <transition name="fade" mode="out-in">
+                            <router-view class="view"></router-view>
+                        </transition>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </template>
 
 <script>
-export default {
-    data() {
-        return {};
+    export default {
+        data() {
+            return {};
+        },
+
+        mounted() {
+            axios.get('/api/auth/get-admin').then(res => {
+                this.$store.state.admin = res.data.admin;
+                Broadcast.$emit('RetrievedAdminCredentials', { admin: res.data.admin });
+            });
+
+            let retrieveAssignedRoles = new Promise((resolve, reject) => {
+                axios.get('/api/admins/' + this.$route.params.id + '/assigned-roles').then(res => {
+                    this.assignedRoles = res.data.assignedRoles;
+                    resolve();
+                }).catch(err => {
+                    console.log(err);
+                });
+            });
+        }
     }
-}
 </script>
 
 <style>
@@ -54,5 +70,9 @@ export default {
 
 .v-select .selected-tag {
     position: absolute !important;
+}
+
+.sidebar-no-right-padding {
+    padding-right: 0px;
 }
 </style>

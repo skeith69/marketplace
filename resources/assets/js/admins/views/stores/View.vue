@@ -6,10 +6,10 @@
             </div>
             <div class="card-body">
                 <div v-if="ifReady">
-                    <div v-if="imagePath">
+                    <div v-if="store.image">
                         <div class="row">
-                            <div class="offset-md-4 col-md-4">
-                                <img class="card-img-top" :src="imagePath" alt="image">
+                            <div class="offset-md-3 col-md-6">
+                                <img class="card-img-top" :src="'/storage/images/' + store.image" alt="">
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,6 @@
         data() {
             return {
                 ifReady: false,
-                imagePath: '',
                 store: ''
             };
         },
@@ -72,7 +71,6 @@
         mounted() {
             let promise = new Promise((resolve, reject) => {
                 axios.get('/api/stores/' + this.$route.params.id).then(res => {
-                    this.imagePath = '/storage/images/' + res.data.store.image;
                     this.store = res.data.store;
                     resolve();
                 });

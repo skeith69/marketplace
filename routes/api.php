@@ -56,5 +56,6 @@ Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.dev'], fun
 });
 
 Route::group(['namespace' => 'Users', 'domain' => 'marketplace.dev'], function () {
-    //
+    Route::get('/stores/{storeId}/products', 'StoresController@products');
+    Route::get('/stores', 'StoresController@index');
 });

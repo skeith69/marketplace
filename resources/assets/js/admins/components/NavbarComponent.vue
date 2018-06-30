@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
         <div class="container-fluid">
             <router-link class="navbar-brand" :to="{ name: 'overview' }">Market Place</router-link>
-            
+
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,16 +32,14 @@ export default {
     },
 
     created() {
-        axios.get('/api/auth/get-admin').then(res => {
-            this.admin = res.data.admin;
+        Broadcast.$on('RetrievedAdminCredentials', (event) => {
+            this.admin = event.admin;
         });
     },
 
     methods: {
         logout() {
-            axios.post('/logout').then(res => {
-                //
-            }).catch(err => {
+            axios.post('/logout').then(res => {}).catch(err => {
                 location.reload();
             });
         }

@@ -29,7 +29,7 @@ Vue.use(Vuex);
 // Source of Truth
 const store = new Vuex.Store({
     state: {
-        user: null,
+        admin: null,
         roles: [],
         permissions: []
     },
@@ -49,17 +49,12 @@ const store = new Vuex.Store({
 
 window.Store = store;
 
-//select filtering
+// Select Filtering
 Vue.component('vue-select-component', VueSelect);
 
 // Layouts
 Vue.component('navbar-component', require('./components/NavbarComponent.vue'));
 Vue.component('sidebar-component', require('./components/SidebarComponent.vue'));
-
-// OAuth2
-/*Vue.component('passport-clients', require('./components/passport/Clients.vue'));
-Vue.component('passport-authorized-clients', require('./components/passport/AuthorizedClients.vue'));
-Vue.component('passport-personal-access-tokens', require('./components/passport/PersonalAccessTokens.vue'));*/
 
 const app = new Vue({
     el: '#app',
@@ -67,4 +62,3 @@ const app = new Vue({
     components: { 'app': App },
     router
 });
-
