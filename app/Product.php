@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
     use SoftDeletes, Filtering, Imaging;
-    
+
     /**
      * Products table.
      *
@@ -37,10 +37,12 @@ class Product extends Model
         parent::boot();
 
         static::creating(function ($model) {
+            $model->store_id = auth('api')->user()->store_id;
             static::storeImage($model);
         });
 
         static::updating(function ($model) {
+            $model->store_id = auth('api')->user()->store_id;
             static::updateImage($model);
         });
 

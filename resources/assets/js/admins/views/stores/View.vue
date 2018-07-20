@@ -22,6 +22,33 @@
                             <label for="email">Address</label>
                             <textarea class="form-control" v-model="store.address" rows="3"></textarea>
                         </div>
+                        <div class="form-group" v-if="todaySales">
+                            <label>Today Sales</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">PHP</div>
+                                </div>
+                                <input type="number" class="form-control" v-model="todaySales" autocomplete="off" min="1" max="99999999" required>
+                            </div>
+                        </div>
+                        <div class="form-group" v-if="todaySales">
+                            <label>Current Week Sales</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">PHP</div>
+                                </div>
+                                <input type="number" class="form-control" v-model="currentWeekSales" autocomplete="off" min="1" max="99999999" required>
+                            </div>
+                        </div>
+                        <div class="form-group" v-if="todaySales">
+                            <label>Current Month Sales</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">PHP</div>
+                                </div>
+                                <input type="number" class="form-control" v-model="currentMonthSales" autocomplete="off" min="1" max="99999999" required>
+                            </div>
+                        </div>
                     </fieldset>
 
                     <button type="button" class="btn btn-info btn-sm" @click.prevent.default="viewStores">Back</button>
@@ -64,19 +91,64 @@
         data() {
             return {
                 ifReady: false,
-                store: ''
+                store: '',
+                todaySales: null,
+                currentWeekSales: null,
+                currentMonthSales: null
             };
         },
 
         mounted() {
-            let promise = new Promise((resolve, reject) => {
+            let storePromise = new Promise((resolve, reject) => {
                 axios.get('/api/stores/' + this.$route.params.id).then(res => {
                     this.store = res.data.store;
                     resolve();
                 });
             });
 
-            promise.then(() => {
+            let todaySalesPromise = new Promise((resolve, reject) => {
+                axios.get('/api/sales/today-sales', {
+                    params: {
+                        store_id: this.$route.params.id
+                    }
+                }).then(res => {
+                    this.todaySales = res.data.todaySales;
+                    resolve();
+                }).catch(err => {
+                    this.ifReady = true;
+                    console.log(err);
+                });
+            });
+
+            let currentWeekSalesPromise = new Promise((resolve, reject) => {
+                axios.get('/api/sales/current-week-sales', {
+                    params: {
+                        store_id: this.$route.params.id
+                    }
+                }).then(res => {
+                    this.currentWeekSales = res.data.currentWeekSales;
+                    resolve();
+                }).catch(err => {
+                    this.ifReady = true;
+                    console.log(err);
+                });
+            });
+
+            let currentMonthSalesPromise = new Promise((resolve, reject) => {
+                axios.get('/api/sales/current-month-sales', {
+                    params: {
+                        store_id: this.$route.params.id
+                    }
+                }).then(res => {
+                    this.currentMonthSales = res.data.currentMonthSales;
+                    resolve();
+                }).catch(err => {
+                    this.ifReady = true;
+                    console.log(err);
+                });
+            });
+
+            Promise.all([storePromise, todaySalesPromise, currentMonthSalesPromise, currentMonthSalesPromise]).then(() => {
                 this.ifReady = true;
             });
         },

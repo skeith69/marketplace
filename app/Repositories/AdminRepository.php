@@ -26,6 +26,7 @@ class AdminRepository extends Repository
     public function store($request)
     {
         return $this->admin->create([
+            'store_id' => $request->store_id,
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => bcrypt($request->password)
@@ -57,7 +58,7 @@ class AdminRepository extends Repository
     {
         return $this->admin->where('id', $id)->with([
             'roles' => function ($query) {
-                $query->select('id');
+                $query->select('id', 'name');
             }
         ])->first()->roles;
     }

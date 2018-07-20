@@ -7,12 +7,16 @@
             <div class="card-body">
                 <div v-if="ifReady">
                     <fieldset disabled>
+                        <div class="form-group" v-if="admin.store_id">
+                            <label>Store</label>
+                            <input type="text" class="form-control" v-model="admin.store.name">
+                        </div>
                         <div class="form-group">
-                            <label for="name">Name</label>
+                            <label>Name</label>
                             <input type="text" class="form-control" v-model="admin.name">
                         </div>
                         <div class="form-group">
-                            <label for="email">Email Address</label>
+                            <label>Email Address</label>
                             <input type="email" class="form-control" v-model="admin.email">
                         </div>
                     </fieldset>

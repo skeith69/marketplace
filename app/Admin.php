@@ -25,7 +25,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'store_id', 'name', 'email', 'password',
     ];
 
     /**
@@ -36,6 +36,13 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Eager load relationships.
+     *
+     * @var array
+     */
+    protected $with = ['store'];
 
     /**
      * Run functions on boot.

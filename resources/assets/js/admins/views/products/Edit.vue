@@ -6,16 +6,12 @@
             </div>
             <div class="card-body">
                 <div v-if="ifReady">
-                    <form ref="editProductForm" role="form" method="POST" accept-charset="utf-8" v-on:submit.prevent="editProduct">
+                    <form v-on:submit.prevent="editProduct">
                         <div class="form-group">
                             <label for="image">Image</label>
                             <input type="file" class="form-control-file" @change="onFileSelected" id="image" required>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label for="store">Store</label>
-                                <vue-select-component v-model="store" @input="selectStore()" label="name" :options="stores"></vue-select-component>
-                            </div>
                             <div class="col-md-6 form-group">
                                 <label for="category">Category</label>
                                 <vue-select-component v-model="category" @input="selectCategory()" label="name" :options="categories"></vue-select-component>
@@ -62,11 +58,8 @@
             return {
                 ifReady: false,
                 image: null,
-                stores: [],
                 categories: [],
-                store: '',
                 category: '',
-                store_id: '',
                 category_id: '',
                 name: '',
                 description: '',
@@ -75,15 +68,6 @@
         },
 
         mounted() {
-            let storesPromise = new Promise((resolve, reject) => {
-                axios.get('/api/stores/retrieve-all-stores', {}).then(res => {
-                    this.stores = res.data.stores;
-                    resolve();
-                }).catch(err => {
-                    console.log(err);
-                });
-            });
-
             let categoriesPromise = new Promise((resolve, reject) => {
                 axios.get('/api/categories/retrieve-all-categories', {}).then(res => {
                     this.categories = res.data.categories;
@@ -108,16 +92,12 @@
                 });
             });
 
-            Promise.all([storesPromise, categoriesPromise, productPromise]).then(() => {
+            Promise.all([categoriesPromise, productPromise]).then(() => {
                 this.ifReady = true;
             });
-
         },
 
         methods: {
-            selectStore() {
-                this.store_id = this.store.id;
-            },
             selectCategory() {
                 this.category_id = this.category.id;
             },
@@ -140,7 +120,6 @@
                 }
 
                 formData.append('_method', 'PATCH');
-                formData.append('store_id', this.store_id);
                 formData.append('category_id', this.category_id);
                 formData.append('name', this.name);
                 formData.append('description', this.description);

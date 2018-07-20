@@ -103,16 +103,14 @@
             });
 
             Promise.all([retrieveRolesPromise, retrieveAssignedRoles, retrieveAdminPromise]).then(() => {
-                this.assignedRoles.forEach(assignedRole => {
-                    this.roles.find(role => {
-                        if (role.id == assignedRole.id) {
-                            role.isAssigned = true;
-                        } else {
-                            role.isAssigned = false;
-                        }
+                this.roles.find(role => {
+                    if (_.some(this.assignedRoles, { id: role.id })) {
+                        role.isAssigned = true;
+                    } else {
+                        role.isAssigned = false;
+                    }
 
-                        role.requesting = false;
-                    });
+                    role.requesting = false;
                 });
 
                 this.ifReady = true;

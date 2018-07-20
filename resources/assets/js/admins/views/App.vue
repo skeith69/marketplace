@@ -25,18 +25,24 @@
         },
 
         mounted() {
-            axios.get('/api/auth/get-admin').then(res => {
-                this.$store.state.admin = res.data.admin;
-                Broadcast.$emit('RetrievedAdminCredentials', { admin: res.data.admin });
-            });
+            Broadcast.$on('RetrievedAdminCredentials', (event) => {
+                axios.get('/api/admins/' + event.admin.id + '/assigned-roles').then(res => {
+                    let roles = [];
 
-            let retrieveAssignedRoles = new Promise((resolve, reject) => {
-                axios.get('/api/admins/' + this.$route.params.id + '/assigned-roles').then(res => {
-                    this.assignedRoles = res.data.assignedRoles;
-                    resolve();
+                    res.data.assignedRoles.forEach((role) => {
+                        roles.push(role.name);
+                    });
+
+                    this.$store.state.roles = roles;
+                    Broadcast.$emit('RetrievedAdminRoles', {});
                 }).catch(err => {
                     console.log(err);
                 });
+            });
+
+            axios.get('/api/auth/get-admin').then(res => {
+                this.$store.state.admin = res.data.admin;
+                Broadcast.$emit('RetrievedAdminCredentials', { admin: res.data.admin });
             });
         }
     }

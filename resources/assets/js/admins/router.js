@@ -1,62 +1,72 @@
 import VueRouter from 'vue-router';
+import store from './store';
 
-import Overview from './views/Overview';
+const Overview = () => import('./views/Overview');
 
 /**
  * Admins
- * 
+ *
  */
-import AdminsIndex from './views/admins/Index';
-import AdminsCreate from './views/admins/Create';
-import AdminsView from './views/admins/View';
-import AdminsEdit from './views/admins/Edit';
-import AdminsAssignRoles from './views/admins/AssignRoles';
+const AdminsIndex = () => import('./views/admins/Index');
+const AdminsCreate = () => import('./views/admins/Create');
+const AdminsView = () => import('./views/admins/View');
+const AdminsEdit = () => import('./views/admins/Edit');
+const AdminsAssignRoles = () => import('./views/admins/AssignRoles');
 
 /**
  * Categories
- * 
+ *
  */
-import CategoriesIndex from './views/categories/Index';
-import CategoriesCreate from './views/categories/Create';
-import CategoriesView from './views/categories/View';
-import CategoriesEdit from './views/categories/Edit';
+const CategoriesIndex = () => import('./views/categories/Index');
+const CategoriesCreate = () => import('./views/categories/Create');
+const CategoriesView = () => import('./views/categories/View');
+const CategoriesEdit = () => import('./views/categories/Edit');
 
 /**
  * Permissions
- * 
+ *
  */
-import PermissionsIndex from './views/permissions/Index';
-import PermissionsCreate from './views/permissions/Create';
-import PermissionsView from './views/permissions/View';
-import PermissionsEdit from './views/permissions/Edit';
+const PermissionsIndex = () => import('./views/permissions/Index');
+const PermissionsCreate = () => import('./views/permissions/Create');
+const PermissionsView = () => import('./views/permissions/View');
+const PermissionsEdit = () => import('./views/permissions/Edit');
 
 /**
  * Products
- * 
+ *
  */
-import ProductsIndex from './views/products/Index';
-import ProductsCreate from './views/products/Create';
-import ProductsView from './views/products/View';
-import ProductsEdit from './views/products/Edit';
+const ProductsIndex = () => import('./views/products/Index');
+const ProductsCreate = () => import('./views/products/Create');
+const ProductsView = () => import('./views/products/View');
+const ProductsEdit = () => import('./views/products/Edit');
 
 /**
  * Roles
- * 
+ *
  */
-import RolesIndex from './views/roles/Index';
-import RolesCreate from './views/roles/Create';
-import RolesView from './views/roles/View';
-import RolesEdit from './views/roles/Edit';
-import RolesAssignPermissions from './views/roles/AssignPermissions';
+const RolesIndex = () => import('./views/roles/Index');
+const RolesCreate = () => import('./views/roles/Create');
+const RolesView = () => import('./views/roles/View');
+const RolesEdit = () => import('./views/roles/Edit');
+const RolesAssignPermissions = () => import('./views/roles/AssignPermissions');
+
+/**
+ * Sales
+ *
+ */
+const SalesIndex = () => import('./views/sales/Index');
+const SalesCreate = () => import('./views/sales/Create');
+const SalesView = () => import('./views/sales/View');
+const SalesEdit = () => import('./views/sales/Edit');
 
 /**
  * Stores
- * 
+ *
  */
-import StoresIndex from './views/stores/Index';
-import StoresCreate from './views/stores/Create';
-import StoresView from './views/stores/View';
-import StoresEdit from './views/stores/Edit';
+const StoresIndex = () => import('./views/stores/Index');
+const StoresCreate = () => import('./views/stores/Create');
+const StoresView = () => import('./views/stores/View');
+const StoresEdit = () => import('./views/stores/Edit');
 
 const router = new VueRouter({
     mode: 'history',
@@ -94,6 +104,12 @@ const router = new VueRouter({
         { path: '/roles/:id', name: 'roles.view', component: RolesView },
         { path: '/roles/:id/edit', name: 'roles.edit', component: RolesEdit },
         { path: '/roles/:id/assign-permissions', name: 'roles.assign-permissions', component: RolesAssignPermissions },
+
+        // sales
+        { path: '/sales', name: 'sales.index', component: SalesIndex},
+        { path: '/sales/create', name: 'sales.create', component: SalesCreate },
+        { path: '/sales/:id', name: 'sales.view', component: SalesView },
+        { path: '/sales/:id/edit', name: 'sales.edit', component: SalesEdit },
 
         // stores
         { path: '/stores', name: 'stores.index', component: StoresIndex},

@@ -16,7 +16,7 @@ class ProductsController extends Controller
      * @var App\Repositories\ProductRepository
      */
     protected $product;
-    
+
     /**
      * Create new instance of product controller.
      *
@@ -26,7 +26,7 @@ class ProductsController extends Controller
     {
         $this->product = $product;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -34,16 +34,16 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        if (! $data = ProductResource::collection($this->product->paginate())) {
+        if (! $data = ProductResource::collection($this->product->paginateWithFilters(request(), request()->per_page, request()->order_by))) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to retrieve resource.'
             ], 400);
         }
-    
+
         return $data;
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -54,13 +54,12 @@ class ProductsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'image'       => 'required|image|max:5000',
-            'store_id'    => 'required|integer',
             'category_id' => 'required|integer',
             'name'        => 'required|min:2|max:255',
             'description' => 'required|min:2|max:500',
             'price'       => 'required|numeric'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'response' => false,
@@ -68,20 +67,20 @@ class ProductsController extends Controller
                 'errors'   => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->product->store($request)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to store resource.'
             ], 500);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully stored.'
         ], 200);
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -96,14 +95,14 @@ class ProductsController extends Controller
                 'message'  => 'Resource does not exist.'
             ], 400);
         }
-    
+
         return response()->json([
             'response'    => true,
             'message'     => 'Resource successfully retrieve.',
             'product' => $product
         ], 200);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -115,13 +114,12 @@ class ProductsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'image'       => 'required|image|max:5000',
-            'store_id'    => 'required|integer',
             'category_id' => 'required|integer',
             'name'        => 'required|min:2|max:255',
             'description' => 'required|min:2|max:500',
             'price'       => 'required|numeric'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'response' => false,
@@ -129,20 +127,20 @@ class ProductsController extends Controller
                 'errors'   => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->product->update($request, $id)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to update resource.'
             ], 500);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully updated.'
         ], 200);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -157,13 +155,13 @@ class ProductsController extends Controller
                 'message'  => 'Failed to delete resource.'
             ], 400);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully deleted.'
         ], 200);
     }
-    
+
     /**
      * Restore the specified resource from storage.
      *
@@ -178,13 +176,13 @@ class ProductsController extends Controller
                 'message'  => 'Failed to restore resource.'
             ], 400);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully restored.'
         ], 200);
     }
-    
+
     /**
      * Forcefully remove the specified resource from storage.
      *
@@ -199,7 +197,7 @@ class ProductsController extends Controller
                 'message'  => 'Failed to permanently delete resource.'
             ], 400);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully deleted permanently.'

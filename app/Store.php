@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Store extends Model
 {
     use SoftDeletes, Filtering, Imaging;
-    
+
     /**
      * Stores table.
      *
@@ -66,5 +66,15 @@ class Store extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * The store has many sales.
+     *
+     * @return array object
+     */
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
     }
 }

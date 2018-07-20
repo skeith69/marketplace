@@ -46,6 +46,16 @@ Route::group(['namespace' => 'Admins', 'domain' => 'admin.marketplace.dev'], fun
         ]
     ]);
 
+    // Sales
+    Route::get('sales/today-sales', 'SalesController@todaySales')->name('stores.today-sales');
+    Route::get('sales/current-week-sales', 'SalesController@currentWeekSales')->name('stores.current-week-sales');
+    Route::get('sales/current-month-sales', 'SalesController@currentMonthSales')->name('stores.current-month-sales');
+    Route::resource('sales', 'SalesController', [
+        'only' => [
+            'index', 'store', 'show', 'update', 'destroy'
+        ]
+    ]);
+
     // Stores
     Route::get('stores/retrieve-all-stores', 'StoresController@all')->name('stores.get-all-stores');
     Route::resource('stores', 'StoresController', [

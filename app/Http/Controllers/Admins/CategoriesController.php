@@ -16,7 +16,7 @@ class CategoriesController extends Controller
      * @var App\Repositories\CategoryRepository
      */
     protected $category;
-    
+
     /**
      * Create new instance of category controller.
      *
@@ -26,7 +26,7 @@ class CategoriesController extends Controller
     {
         $this->category = $category;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -34,16 +34,16 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        if (! $data = CategoryResource::collection($this->category->paginate())) {
+        if (! $data = CategoryResource::collection($this->category->paginateWithFilters(request(), request()->per_page, request()->order_by))) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to retrieve resource.'
             ], 400);
         }
-    
+
         return $data;
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -56,7 +56,7 @@ class CategoriesController extends Controller
             'name'        => 'required|min:2|max:255',
             'description' => 'required|min:2|max:500'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'response' => false,
@@ -64,20 +64,20 @@ class CategoriesController extends Controller
                 'errors'   => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->category->store($request)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to store resource.'
             ], 500);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully stored.'
         ], 200);
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -92,14 +92,14 @@ class CategoriesController extends Controller
                 'message'  => 'Resource does not exist.'
             ], 400);
         }
-    
+
         return response()->json([
             'response'    => true,
             'message'     => 'Resource successfully retrieve.',
             'category' => $category
         ], 200);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -113,7 +113,7 @@ class CategoriesController extends Controller
             'name'        => 'required|min:2|max:255',
             'description' => 'required|min:2|max:500'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'response' => false,
@@ -121,20 +121,20 @@ class CategoriesController extends Controller
                 'errors'   => $validator->errors()
             ], 400);
         }
-    
+
         if (! $this->category->update($request, $id)) {
             return response()->json([
                 'response' => false,
                 'message'  => 'Failed to update resource.'
             ], 500);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully updated.'
         ], 200);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -149,13 +149,13 @@ class CategoriesController extends Controller
                 'message'  => 'Failed to delete resource.'
             ], 400);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully deleted.'
         ], 200);
     }
-    
+
     /**
      * Restore the specified resource from storage.
      *
@@ -170,13 +170,13 @@ class CategoriesController extends Controller
                 'message'  => 'Failed to restore resource.'
             ], 400);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully restored.'
         ], 200);
     }
-    
+
     /**
      * Forcefully remove the specified resource from storage.
      *
@@ -191,7 +191,7 @@ class CategoriesController extends Controller
                 'message'  => 'Failed to permanently delete resource.'
             ], 400);
         }
-    
+
         return response()->json([
             'response' => true,
             'message'  => 'Resource successfully deleted permanently.'

@@ -18,14 +18,28 @@ class ProductRepository extends Repository
     }
 
     /**
-     * Create pagination for the resources.
+     * Create pagination with filters for the resources.
      *
-     * @param  integer $length
+     * @param  \Illuminate\Http\Request  $request
+     * @param  integer                   $length
+     * @param  string                    $orderBy
+     * @param  boolean                   $removePage
      * @return array json object
      */
-    public function paginate($length = 10)
-    {
-        return $this->product->with('category', 'store')->paginate($length);
+    public function paginateWithFilters(
+        $request = null,
+        $length = 10,
+        $orderBy = 'desc',
+        $removePage = true
+    ) {
+        return $this->model->filter($request)
+            ->where('store_id', auth('api')->user()->store_id)
+            ->with('category', 'store')
+            ->orderBy('created_at', $orderBy)
+            ->paginate($length)
+            ->withPath(
+                $this->model->createPaginationUrl($request, $removePage)
+            );
     }
 
     /**
