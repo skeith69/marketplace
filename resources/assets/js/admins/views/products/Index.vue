@@ -92,7 +92,7 @@
                 <form class="form-inline">
                     <button type="button" class="btn btn-primary mr-2" @click.prevent.default="openSearchModal">Search Products</button>
                     <label class="sr-only" for="Number of Items">Number of Items</label>
-                    <div class="input-group mb-2">
+                    <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text">Items per page</div>
                         </div>

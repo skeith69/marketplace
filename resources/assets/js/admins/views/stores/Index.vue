@@ -88,8 +88,9 @@
 
             <div class="float-right">
                 <form class="form-inline">
+                    <button type="button" class="btn btn-primary mr-2" @click.prevent.default="openSearchModal">Search Stores</button>
                     <label class="sr-only" for="Number of Items">Number of Items</label>
-                    <div class="input-group mb-2">
+                    <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text">Items per page</div>
                         </div>
@@ -102,12 +103,48 @@
                     </div>
                 </form>
             </div>
+
+            <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="filterStores" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Search Stores</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" v-model="searchColumnName" autocomplete="off" maxlength="255">
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" class="form-control" v-model="searchColumnAddress" autocomplete="off" maxlength="255">
+                            </div>
+                            <div class="form-group">
+                                <label>Order By</label>
+                                <select class="form-control" v-model="order_by">
+                                    <option value="desc">Newest</option>
+                                    <option value="asc">Oldest</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger btn-sm" @click.prevent.default="clear">Clear</button>
+                            <button type="button" class="btn btn-success btn-sm" @click.prevent.default="search">Search</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
 <script>
-const getStores = (page, per_page, callback) => {
-    const params = { page, per_page };
+const getStores = (page, per_page, searchColumnName, searchColumnAddress, order_by, callback) => {
+    const params = { page, per_page, searchColumnName, searchColumnAddress, order_by };
 
     axios.get('/api/stores', { params }).then(res => {
         callback(null, res.data);
@@ -126,6 +163,9 @@ export default {
     data() {
         return {
             stores: null,
+            searchColumnName: '',
+            searchColumnAddress: '',
+            order_by: 'desc',
             meta: {
                 current_page: null,
                 from: null,
@@ -149,23 +189,23 @@ export default {
 
     beforeRouteEnter (to, from, next) {
         if (to.query.per_page == null) {
-            getStores(to.query.page, 10, (err, data) => {
+            getStores(to.query.page, 10, to.query.searchColumnName, to.query.searchColumnAddress, to.query.order_by, (err, data) => {
                 next(vm => vm.setData(err, data));
             });
         } else {
-            getStores(to.query.page, to.query.per_page, (err, data) => {
+            getStores(to.query.page, to.query.per_page, to.query.searchColumnName, to.query.searchColumnAddress, to.query.order_by, (err, data) => {
                 next(vm => vm.setData(err, data));
             });
         }
     },
 
     beforeRouteUpdate (to, from, next) {
-        getStores(to.query.page, this.meta.per_page, (err, data) => {
+        getStores(to.query.page, this.meta.per_page, this.searchColumnName, this.searchColumnAddress, this.order_by, (err, data) => {
             this.setData(err, data);
             next();
         });
     },
-    
+
     computed: {
         nextPage() {
             return this.meta.current_page + 1;
@@ -212,8 +252,11 @@ export default {
                 name: 'stores.index',
                 query: {
                     page: 1,
-                    per_page: this.meta.per_page
-                },
+                    per_page: this.meta.per_page,
+                    searchColumnName: this.searchColumnName,
+                    searchColumnAddress: this.searchColumnAddress,
+                    order_by: this.order_by
+                }
             });
         },
         goToPage(page = null) {
@@ -222,8 +265,11 @@ export default {
                 name: 'stores.index',
                 query: {
                     page,
-                    per_page: this.meta.per_page
-                },
+                    per_page: this.meta.per_page,
+                    searchColumnName: this.searchColumnName,
+                    searchColumnAddress: this.searchColumnAddress,
+                    order_by: this.order_by
+                }
             });
         },
         goToLastPage() {
@@ -232,8 +278,11 @@ export default {
                 name: 'stores.index',
                 query: {
                     page: this.meta.last_page,
-                    per_page: this.meta.per_page
-                },
+                    per_page: this.meta.per_page,
+                    searchColumnName: this.searchColumnName,
+                    searchColumnAddress: this.searchColumnAddress,
+                    order_by: this.order_by
+                }
             });
         },
         goToNextPage() {
@@ -242,8 +291,11 @@ export default {
                 name: 'stores.index',
                 query: {
                     page: this.nextPage,
-                    per_page: this.meta.per_page
-                },
+                    per_page: this.meta.per_page,
+                    searchColumnName: this.searchColumnName,
+                    searchColumnAddress: this.searchColumnAddress,
+                    order_by: this.order_by
+                }
             });
         },
         goToPreviousPage() {
@@ -252,7 +304,10 @@ export default {
                 name: 'stores.index',
                 query: {
                     page: this.prevPage,
-                    per_page: this.meta.per_page
+                    per_page: this.meta.per_page,
+                    searchColumnName: this.searchColumnName,
+                    searchColumnAddress: this.searchColumnAddress,
+                    order_by: this.order_by
                 }
             });
         },
@@ -326,10 +381,35 @@ export default {
                 name: 'stores.index',
                 query: {
                     page: 1,
-                    per_page: this.meta.per_page
+                    per_page: this.meta.per_page,
+                    searchColumnName: this.searchColumnName,
+                    searchColumnAddress: this.searchColumnAddress,
+                    order_by: this.order_by
                 }
             });
-        }
+        },
+        search() {
+                $('#searchModal').modal('hide');
+                this.showProgress = true;
+                this.$router.push({
+                    name: 'stores.index',
+                    query: {
+                        page: 1,
+                        per_page: this.meta.per_page,
+                        searchColumnName: this.searchColumnName,
+                        searchColumnAddress: this.searchColumnAddress,
+                        order_by: this.order_by
+                    }
+                });
+            },
+            clear() {
+                this.searchColumnName = '';
+                this.searchColumnAddress = '';
+                this.order_by = 'desc';
+            },
+            openSearchModal() {
+                $('#searchModal').modal('show');
+            }
     }
 }
 </script>

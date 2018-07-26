@@ -34,7 +34,7 @@ class StoresController extends Controller
      */
     public function index()
     {
-        if (! $data = StoreResource::collection($this->store->paginate())) {
+        if (! $data = StoreResource::collection($this->store->paginateWithFilters(request(), request()->per_page, request()->order_by))) {
             return response()->json([
                 'message' => 'Failed to retrieve resource'
             ], 400);

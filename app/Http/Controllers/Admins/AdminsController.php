@@ -34,7 +34,7 @@ class AdminsController extends Controller
      */
     public function index()
     {
-        if (! $data = AdminResource::collection($this->admin->paginate())) {
+        if (! $data = AdminResource::collection($this->admin->paginateWithFilters(request(), request()->per_page, request()->order_by))) {
             return response()->json([
                 'message' => 'Failed to retrieve resource'
             ], 400);
